@@ -1,0 +1,5 @@
+.app-elem {width:180px;margin-bottom: 5px;}
+.app-name {text-align: left;overflow: hidden; text-overflow:ellipsis;white-space:nowrap;}
+.app-detail {text-align: left;overflow: hidden; text-overflow:ellipsis;white-space:nowrap;}
+
+.tag-elem {width:50px;text-align:center;float:left;margin-left:5px;margin-bottom:5px;overflow: hidden; text-overflow:ellipsis;white-space:nowrap;}
