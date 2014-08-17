@@ -45,7 +45,7 @@ return array(
                 'connectionString' => 'mysql:host=127.0.0.1;dbname=backadmin',
                 'emulatePrepare' => true,
                 'username' => 'backadmin',
-                'password' => 'o]0lDbgKmpl8maqk',
+                'password' => 'xxx',
                 'charset' => 'utf8',
             ),
 
