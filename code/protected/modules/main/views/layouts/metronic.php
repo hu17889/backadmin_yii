@@ -52,7 +52,11 @@
     <a class="navbar-brand" href="/site/index">
     <img src="/images/backadminlogo.png" alt="logo" class="img-responsive" />
     </a>
-
+        <!-- 横向菜单-->
+        <?php if(Yii::app()->params['horizontal_menu_layout']) { ?>
+          <?php $this->widget('application.modules.main.widgets.LeftMenuMetro', array('userid' => $this->userid,'allMenu'=>Yii::app()->params['close_user'],'horiz'=>Yii::app()->params['horizontal_menu_layout'])); ?>
+        <?php } ?>
+        
       <!-- BEGIN TOP NAVIGATION MENU -->
       <ul class="nav navbar-nav pull-right">
         <!-- BEGIN USER LOGIN DROPDOWN -->
@@ -80,16 +84,19 @@
 <div class="clearfix"></div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-  <!-- BEGIN SIDEBAR -->
-    <div class="page-sidebar navbar-collapse collapse">
-      <!-- BEGIN SIDEBAR MENU -->        
-      <?php $this->widget('application.modules.main.widgets.LeftMenuMetro', array('userid' => $this->userid)); ?>
-      <!-- END SIDEBAR MENU -->
-    </div>
-    <!-- END SIDEBAR -->
+      <!-- BEGIN SIDEBAR -->
+      <!-- 纵向菜单-->
+      <?php if(!Yii::app()->params['horizontal_menu_layout']) { ?>
+      <div class="page-sidebar navbar-collapse collapse">
+        <!-- BEGIN SIDEBAR MENU -->        
+        <?php $this->widget('application.modules.main.widgets.LeftMenuMetro', array('userid' => $this->userid,'allMenu'=>Yii::app()->params['close_user'])); ?>
+        <!-- END SIDEBAR MENU -->
+      </div>
+      <?php } ?>
+      <!-- END SIDEBAR -->
     
     <!-- BEGIN PAGE -->
-    <div class="page-content">
+    <div class="page-content" style="<?php if(Yii::app()->params['horizontal_menu_layout']) echo 'margin-left:0px';?>">
         <!-- BEGIN PAGE HEADER-->
         <div class="row">
           <div class="col-md-12">

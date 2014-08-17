@@ -94,5 +94,6 @@ return array(
         'params'=>array(
             // 用户登陆开关，false不需要登陆所有用户可访问，但需要创建路由，true需要登录
             'close_user'=>false,
+            'horizontal_menu_layout' => false, // 是否横向菜单
         ),
     );
