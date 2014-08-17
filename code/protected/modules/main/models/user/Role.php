@@ -22,6 +22,7 @@ class Role extends MActiveRecord
      */
     public function updateRole(array $params)
     {
+        //echo "<pre>";var_dump($params);exit;
         $this->updateByPk($params['id'],array(
             'rname'=>$params['name'],
         ));

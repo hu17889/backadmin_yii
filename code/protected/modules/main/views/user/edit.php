@@ -25,13 +25,13 @@
         <div class="form-group">
           <label  class="col-md-3 control-label">用户Id</label>
           <div class="col-md-9">
-            <input type="text" class="form-control"  name='id' value='<?php echo !empty($entity['uid']) ? $entity['uid']:''; ?>' placeholder="<?php echo !empty($entity['uid']) ? $entity['uid']:''; ?>" readonly>
+            <input type="text" class="form-control"  name='id' value='<?php echo !empty($entity['uid']) ? htmlspecialchars($entity['uid']):''; ?>' placeholder="<?php echo !empty($entity['uid']) ? htmlspecialchars($entity['uid']):''; ?>" readonly>
           </div>
         </div>
         <div class="form-group">
           <label  class="col-md-3 control-label">用户名</label>
           <div class="col-md-9">
-            <input type="text" class="form-control"  name='name' value='<?php echo !empty($entity['uname']) ? $entity['uname']:''; ?>' placeholder="<?php echo !empty($entity['uname']) ? $entity['uname']:''; ?>" >
+            <input type="text" class="form-control"  name='name' value='<?php echo !empty($entity['uname']) ? htmlspecialchars($entity['uname']):''; ?>' placeholder="<?php echo !empty($entity['uname']) ? htmlspecialchars($entity['uname']):''; ?>" >
           </div>
         </div>
         <div class="form-group">
@@ -43,14 +43,13 @@
         <div class="form-group">
           <label  class="col-md-3 control-label">邮箱</label>
           <div class="col-md-9">
-            <input type="text" class="form-control"  name='email' value='<?php echo !empty($entity['email']) ? $entity['email']:''; ?>' placeholder="<?php echo !empty($entity['email']) ? $entity['email']:''; ?>" >
+            <input type="text" class="form-control"  name='email' value='<?php echo !empty($entity['email']) ? htmlspecialchars($entity['email']):''; ?>' placeholder="<?php echo !empty($entity['email']) ? htmlspecialchars($entity['email']):''; ?>" >
           </div>
         </div>
         <div id='rolemenu' class="form-group" >
           <label  class="col-md-3 control-label">用户角色</label>
           <div class="col-md-9">
             <select name='rid' class="form-control">
-              <option value="">请选择</option>
               <?php foreach ($roles as $v) {?>
               <option value="<?php echo htmlspecialchars($v['rid'])?>"><?php echo htmlspecialchars($v['rname'])?></option>
               <?php }?>
@@ -74,7 +73,7 @@
 
 <script type='text/javascript'>
 (function($){
-    $('#rolemenu select').val('<?php echo isset($entity["rid"]) ?  htmlspecialchars($entity["rid"]) : "";?>');
+    $('#rolemenu select').val('<?php echo isset($entity["rid"]) ?  htmlspecialchars($entity["rid"]) : "1";?>');
 
     $('#cancel').on("click",function(){
         location.href="/main/user/list";

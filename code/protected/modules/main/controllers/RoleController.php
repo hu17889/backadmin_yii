@@ -95,9 +95,16 @@ class RoleController extends BackController
         // action 列表 展现
         $action = new Action;
         $actionList = $action->findAll('1=1 order by is_menu desc, route desc');
+        $retActions = array();
+        foreach ($actionList as $v) {
+            $parts = explode("/",$v['route']);
+            $retActions[$parts[1]][] = $v->getAttributes();
+        }
+        //echo "<pre>";var_dump($retActions);exit;
         if(isset($_REQUEST['id'])&&$_REQUEST['id']!='') {
             // 修改
             $roleInfo = $role->findRole($_REQUEST['id']);
+            //echo "<pre>";var_dump($retActions,$roleInfo['actions']);exit;
             if(!empty($_REQUEST['modify'])) {
                 $role->updateRole($_REQUEST);
                 $this->redirect('/main/role/list');
@@ -108,7 +115,7 @@ class RoleController extends BackController
             if(!empty($roleInfo)) {
                 $roleInfo = $roleInfo->getAttributes();
                 $roleInfo['actions'] = RoleAction::model()->findActions($roleInfo['rid']);
-                $this->render('edit',array('action_list'=>$actionList,'entity'=>$roleInfo,'label'=>'has_role'));
+                $this->render('edit',array('action_list'=>$retActions,'entity'=>$roleInfo,'label'=>'has_role'));
                 exit;
             }
             if(!empty($_REQUEST['modify'])) {
@@ -120,6 +127,6 @@ class RoleController extends BackController
         // foreach($actionList as $k=>$v) {
             // echo "<pre>";var_dump($k,$v->getAttributes());
         // }exit;
-        $this->render('edit',array('action_list'=>$actionList,'entity'=>$roleInfo,'label'=>$label));
+        $this->render('edit',array('action_list'=>$retActions,'entity'=>$roleInfo,'label'=>$label));
     }
 }

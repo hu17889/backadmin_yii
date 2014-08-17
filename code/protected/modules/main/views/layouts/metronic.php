@@ -49,7 +49,7 @@
   <!-- BEGIN TOP NAVIGATION BAR -->
   <div class="header-inner">
     <!-- BEGIN LOGO -->  
-    <a class="navbar-brand" href="doc">
+    <a class="navbar-brand" href="/site/index">
     <img src="/images/backadminlogo.png" alt="logo" class="img-responsive" />
     </a>
 

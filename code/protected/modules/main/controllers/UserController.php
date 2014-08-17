@@ -84,28 +84,29 @@ class UserController extends BackController
     public function actionEdit()
     {
         //echo "<pre>";var_dump($_REQUEST);exit;
-        $usr = new User;
-        $role = new Role;
-        $usrInfo = array();
-        $label = '';
         foreach($_REQUEST as $k=>$v) {
             $_REQUEST[$k] = trim($v);
         }
 
+        $usr = new User;
+        $role = new Role;
+        $usrInfo = array();
+        $label = '';
         // 获取role列表
         $roleInfos = $role->findAll(array('select'=>'rid,rname'));
-        // 过滤超极管理员
         foreach($roleInfos as $role) {
-            if($role['rname']!='superman') $roles[] = $role;
+            $roles[] = $role;
         }
         // var_dump($_REQUEST); exit;
         // 
         if(isset($_REQUEST['id'])&&$_REQUEST['id']!='') {
+            $uid = intval($_REQUEST['id']);
             // 修改
-            $usrInfo = $usr->getUserWithRole('uid=:uid',array(':uid'=>$_REQUEST['id']));
+            $usrInfo = $usr->getUserWithRole('uid=:uid',array(':uid'=>$uid));
             $usrInfo = $usrInfo[0];
             if(isset($_REQUEST['modify'])) {
-                $usr->updateByPk($_REQUEST['id'],array(
+                if(empty($_REQUEST['rid'])||empty($_REQUEST['name'])||empty($_REQUEST['email'])||empty($_REQUEST['pwd'])) exit;
+                $usr->updateByPk($uid,array(
                     'uname'=>$_REQUEST['name'],
                     'email'=>$_REQUEST['email'],
                     'pwd'=>Login::pwdEncry($_REQUEST['pwd']),
@@ -122,6 +123,7 @@ class UserController extends BackController
                 exit;
             }
             if(isset($_REQUEST['modify'])) {
+                if(empty($_REQUEST['rid'])||empty($_REQUEST['name'])||empty($_REQUEST['email'])||empty($_REQUEST['pwd'])) exit;
                 $usr->uname = $_REQUEST['name'];
                 $usr->email = $_REQUEST['email'];
                 $usr->pwd = Login::pwdEncry($_REQUEST['pwd']);

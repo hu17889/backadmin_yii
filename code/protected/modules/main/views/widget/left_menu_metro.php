@@ -6,25 +6,25 @@
 	</li>
 	<?php $i=0;foreach($first as $v) {?>
 	<?php if($i==0) {  $i=1;?>
-	<li class="start" data-aid="<?php echo $v['route'];?>">
+	<li class="start" data-aid="<?php echo htmlspecialchars($v['route']);?>">
 	<?php } else {?>
-	<li class="" data-aid="<?php echo $v['route'];?>">
+	<li class="" data-aid="<?php echo htmlspecialchars($v['route']);?>">
 	<?php }?>
 		<?php if(!isset($second[$v['aid']])) {?><!--二级菜单-->
-		<a href="<?php echo $v['route'];?> "> 
+		<a href="<?php echo htmlspecialchars($v['route']);?> "> 
 			<i class="fa fa-bookmark-o"></i>
-			<span class="title"><?php echo $v['aname'];?></span>
+			<span class="title"><?php echo htmlspecialchars($v['aname']);?></span>
 		</a>
 		<?php } else {?>
-		<a href="<?php echo $v['route'];?> "> 
+		<a href="<?php echo htmlspecialchars($v['route']);?> "> 
 			<i class="fa fa-bookmark-o"></i>
-			<span class="title"><?php echo $v['aname'];?></span>
+			<span class="title"><?php echo htmlspecialchars($v['aname']);?></span>
 			<span class="arrow "></span>
 		</a>
 		<ul class="sub-menu">
 			<?php foreach($second[$v['aid']] as $v1) { ?>
-			<li data-aid="<?php echo $v1['route'];?>">
-				<a href="<?php echo $v1['route'];?>"><?php echo $v1['aname'];?></a>
+			<li data-aid="<?php echo htmlspecialchars($v1['route']);?>">
+				<a href="<?php echo htmlspecialchars($v1['route']);?>"><?php echo htmlspecialchars($v1['aname']);?></a>
 			</li>
 			<?php } ?>
 		</ul>

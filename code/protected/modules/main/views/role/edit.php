@@ -24,7 +24,7 @@
                 <div class="form-group">
                     <label  class="col-md-3 control-label">角色Id</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control"  name='id' value='<?php echo !empty($entity['rid']) ? $entity['rid']:''; ?>' readonly>
+                        <input type="text" class="form-control"  name='id' value='<?php echo !empty($entity['rid']) ? htmlspecialchars($entity['rid']):''; ?>' readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -34,14 +34,18 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-3 control-label">Checkboxes</label>
+                    <label class="col-md-3 control-label">功能权限设置</label>
                     <div class="col-md-9">
                         <div class="checkbox-list">
-                            <?php foreach($action_list as $key=>$action) { ?>
-                            <?php $check = !empty($entity['actions'])&&isset($entity['actions'][$action['aid']]) ? 'checked' : '';?>
-                            <label>
-                            <input type='checkbox' name='actions[<?php echo $key;?>]' value='<?php echo $action['aid']; ?>' <?php echo $check;?> /><?php echo $action['aname']; ?> <?php echo $action['route']; ?>
-                            </label>
+                            <?php $i=0;foreach($action_list as $controllername=>$actions) { ?>
+                                <hr>
+                                <h3><?php echo htmlspecialchars($controllername);?></h3>
+                                <?php foreach($actions as $key=>$action) { ?>
+                                <?php $check = !empty($entity['actions'])&&isset($entity['actions'][$action['aid']]) ? 'checked' : '';?>
+                                <label>
+                                <input type='checkbox' name='actions[<?php echo $i;?>]' value='<?php echo htmlspecialchars($action['aid']); ?>' <?php echo $check;?> /><?php echo htmlspecialchars($action['aname']); ?> <?php echo htmlspecialchars($action['route']); ?>
+                                </label>
+                                <?php $i++;} ?>
                             <?php } ?>
                         </div>
                     </div>

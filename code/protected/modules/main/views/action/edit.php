@@ -25,7 +25,7 @@
 				<div class="form-group">
 					<label  class="col-md-3 control-label">路由Id</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control"  name='id' value='<?php echo !empty($entity['aid']) ? $entity['aid']:''; ?>' placeholder="<?php echo !empty($entity['aid']) ? $entity['aid']:''; ?>" readonly>
+						<input type="text" class="form-control"  name='id' value='<?php echo !empty($entity['aid']) ? htmlspecialchars($entity['aid']):''; ?>' placeholder="<?php echo !empty($entity['aid']) ? htmlspecialchars($entity['aid']):''; ?>" readonly>
 					</div>
 				</div>
 				<div class="form-group">
@@ -36,6 +36,13 @@
 							<option value="1">一级菜单</option>
 							<option value="2">二级菜单</option>
 						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label  class="col-md-3 control-label">菜单排序</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control"  name='menusort' value='<?php echo !empty($entity['menusort']) ? htmlspecialchars($entity['menusort']):'0'; ?>' placeholder="菜单排序值">
+						<span class="help-block">输入范围（1-100）</span>
 					</div>
 				</div>
 				<div id='firstmenu' class="form-group" style='display:none'>
@@ -90,12 +97,15 @@
 	$('#menu_type').val(menuType);
 	
 	$('#firstmenu select').val('<?php echo isset($entity["first_menu"]) ?  htmlspecialchars($entity["first_menu"]) : "";?>');
-	$("#menu_type").on('change', function(){
-		elem = $(this).children('option:selected').val();
+	showFirstMenu = function(){
+		elem = $("#menu_type").children('option:selected').val();
 		if(elem=="2") $('#firstmenu').show();
 		else $('#firstmenu').hide();
 
-	});
+	};
+	showFirstMenu();
+
+	$("#menu_type").on('change', showFirstMenu);
 
     $('#cancel').on("click",function(){
         location.href="/main/action/list";

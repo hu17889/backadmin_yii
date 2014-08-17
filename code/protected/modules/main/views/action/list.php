@@ -35,6 +35,7 @@
                     <th>路由信息</th>
                     <th>菜单类型</th>
                     <th>一级菜单</th>
+                    <th>菜单排序值</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -98,6 +99,7 @@
             'aTargets': [0]
         }],
         "aoColumns": [
+          null,
           null,
           null,
           null,
