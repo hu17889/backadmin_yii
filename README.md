@@ -11,6 +11,6 @@ php后台，在工作中总有一些后台数据管理的工作，此处抽取�
 
 后台基于php框架yii，以及模板metronic
 
-后台示例：http://backadmin.hucong.net/site/index
+后台示例：http://backadmin.hucong.net/site/index  用户名:admin 密码:admin
 
 wiki：https://github.com/hu17889/backadmin_yii/wiki
