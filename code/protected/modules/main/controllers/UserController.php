@@ -12,10 +12,14 @@ class UserController extends BackController
         -2=>'操作失败',
         -3=>'账号不符合规则',
         -4=>'密码错误',
-        -5=>'邮箱不能为空');
+        -5=>'邮箱不能为空',
+        -6=>'用户已存在',
+        -7=>'验证码错误',
+    );
     public function actionInitSystem()
     {
         //todo 增加权限限制
+        exit;
         InitSystem::initActions();
         InitSystem::initSupperUser('superman','superman');
         InitSystem::initRoles();
@@ -84,29 +88,28 @@ class UserController extends BackController
     public function actionEdit()
     {
         //echo "<pre>";var_dump($_REQUEST);exit;
-        foreach($_REQUEST as $k=>$v) {
-            $_REQUEST[$k] = trim($v);
-        }
-
         $usr = new User;
         $role = new Role;
         $usrInfo = array();
         $label = '';
+        foreach($_REQUEST as $k=>$v) {
+            $_REQUEST[$k] = trim($v);
+        }
+
         // 获取role列表
         $roleInfos = $role->findAll(array('select'=>'rid,rname'));
+        // 过滤超极管理员
         foreach($roleInfos as $role) {
-            $roles[] = $role;
+            if($role['rname']!='superman') $roles[] = $role;
         }
         // var_dump($_REQUEST); exit;
         // 
         if(isset($_REQUEST['id'])&&$_REQUEST['id']!='') {
-            $uid = intval($_REQUEST['id']);
             // 修改
-            $usrInfo = $usr->getUserWithRole('uid=:uid',array(':uid'=>$uid));
+            $usrInfo = $usr->getUserWithRole('uid=:uid',array(':uid'=>$_REQUEST['id']));
             $usrInfo = $usrInfo[0];
             if(isset($_REQUEST['modify'])) {
-                if(empty($_REQUEST['rid'])||empty($_REQUEST['name'])||empty($_REQUEST['email'])||empty($_REQUEST['pwd'])) exit;
-                $usr->updateByPk($uid,array(
+                $usr->updateByPk($_REQUEST['id'],array(
                     'uname'=>$_REQUEST['name'],
                     'email'=>$_REQUEST['email'],
                     'pwd'=>Login::pwdEncry($_REQUEST['pwd']),
@@ -123,7 +126,6 @@ class UserController extends BackController
                 exit;
             }
             if(isset($_REQUEST['modify'])) {
-                if(empty($_REQUEST['rid'])||empty($_REQUEST['name'])||empty($_REQUEST['email'])||empty($_REQUEST['pwd'])) exit;
                 $usr->uname = $_REQUEST['name'];
                 $usr->email = $_REQUEST['email'];
                 $usr->pwd = Login::pwdEncry($_REQUEST['pwd']);
@@ -141,7 +143,9 @@ class UserController extends BackController
     {
         $this->layout = '';
         $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : '';
-        if(isset($_POST['login_sub'])&&!empty($_POST['name'])&&!empty($_POST['pwd'])) 
+        $showregister = isset($_REQUEST['isreg']) ? $_REQUEST['isreg'] : '';
+        //echo "<pre>";var_dump($_REQUEST);exit;
+        if(!empty($_POST['name'])&&!empty($_POST['pwd'])) 
         {
             $loginUserInfo = Login::logins($_REQUEST['name'],$_REQUEST['pwd'],'notmingwen');
             // 兼容老的情况
@@ -160,61 +164,174 @@ class UserController extends BackController
             }
             else 
             {
-                $this->render('login_soft', array('error'=>1,'url'=>$url));
+                $this->render('login_soft', array('showregister' => $showregister,'error'=>1,'url'=>$url));
                 exit;
             }
         }
         //echo "fuck,world";
         $this->render('login_soft',array(
             'url' => $url,
+            'showregister' => $showregister,
         ));
     }
 
     //注册
     public function actionRegister()
     {
-        $account = isset($_POST['name']) ? trim($_POST['name']) : '';
-        $pwd = isset($_POST['pwd']) ? trim($_POST['pwd']) : '';
-        $pwdConfirm = isset($_POST['pwdconfirm']) ? trim($_POST['pwdconfirm']) : '';
+        $account = isset($_REQUEST['name']) ? trim($_REQUEST['name']) : '';
+        $pwd = isset($_REQUEST['pwd']) ? trim($_REQUEST['pwd']) : '';
+        $pwdConfirm = isset($_REQUEST['pwdconfirm']) ? trim($_REQUEST['pwdconfirm']) : '';
 
         //var_dump($account);//exit;
-        if (!$this->validateAccount($account))
-        {
-            //$this->render('/site/error',array('errortxt'=>$descError));
-            //$errorDesc = '用户名只能包括英文字符汉字和数字，并且不能以数字开头,长度4-20个字符';
-            //$this->render('/site/error', array('errortxt' => $errorDesc)); 
-            //exit();
-            $accountError = '用户名只能包括英文字符汉字和数字，并且不能以数字开头,长度4-20个字符';
+        //if (!$this->validateAccount($account)) {
+
+        include_once Yii::app()->basePath . '/../securimage/securimage.php';
+        $securimage = new Securimage();
+        if ($securimage->check($_REQUEST['captcha_code']) == false) {
+            $accountError = '验证码错误';
+            $this->jsonResult(-7, array('info' => $accountError));
+        }
+        if (empty($account)) {
+            $accountError = '用户名不能为空';
             $this->jsonResult(-3, array('info' => $accountError));
         }
 
-        if (empty($pwd) || $pwd != $pwdConfirm || strlen($pwd) < 6) 
-        {
-            $pwdError = '密码有误，至少6个字符';
-            //$this->render('/site/error', array('errortxt' => '密码有误'));
+        if (empty($pwd) || $pwd != $pwdConfirm) {
+            $pwdError = '密码不能为空，两次密码要相同';
             $this->jsonResult(-4, array('info' => $pwdError));
         }
 
-        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-        if (empty($email))
-        {
-            $emailError = '邮箱必填,不能为空';
+        $email = isset($_REQUEST['email']) ? trim($_REQUEST['email']) : '';
+        if (empty($email)) {
+            $emailError = '邮箱不能为空';
             $this->jsonResult(-5, array('info' => $emailError));
         }
 
+        $ret = User::model()->findAll("uname=:name or email=:email",array(":name"=>$account,"email"=>$email));
+        if(count($ret)>0) {
+            $error = '用户已存在';
+            $this->jsonResult(-6, array('info' => $error));
+        }
         $user = new User();
         $user->uname = $account;
         $user->email = $email;
-        $user->pwd = $pwd;
-        $user->rid = 0; // 未分配角色 
+        $user->pwd = Login::pwdEncry($pwd);
+        $user->rid = 2; // 登录用户 
         $user->save();
         $loginUserInfo = Login::logins($account,$pwd, 'notmingwen');
         if(empty($loginUserInfo))
         {
             $loginUserInfo = Login::logins($account,$pwd,'mingwen');
         }
-        //$this->redirect('/student/courselist');
         $this->jsonResult(0);
+    }
+
+    // AJAX 重置密码邮件发送
+    public function actionResetpwdEmail()
+    {
+        $this->layout="";
+        $email = isset($_REQUEST['email']) ? $_REQUEST['email'] : '';
+        if(empty($email)) {
+            $this->render("login_soft",array("infomsg"=>"信息有误")); exit;
+        }
+        $user = User::model()->findAll("email=:email or uname=:email",array(":email"=>$email));
+        if(empty($user)) {
+            $this->render("login_soft",array("infomsg"=>"信息有误")); exit;
+        }
+        $user = $user[0];
+        $uid = $user->uid;
+
+        $ret = Resetpwd::model()->findAll("uid=:uid",array(":uid"=>$uid));
+        if(empty($ret)) {
+            $resetpwd = new Resetpwd;
+            $resetpwd->randkey = rand(0,999999999);
+            $resetpwd->uid = $uid;
+            $resetpwd->expired = time()+2*3600; 
+            $resetpwd->save();
+        } else if($ret[0]->expired<time()) {
+            $resetpwd = $ret[0];
+            $resetpwd->randkey = rand(0,999999999);
+            $resetpwd->uid = $uid;
+            $resetpwd->expired = time()+2*3600; 
+            $resetpwd->save();
+        } else {
+            $resetpwd = $ret[0];
+        }
+        //echo "<pre>";var_dump($_SERVER);exit;
+        
+
+        $confirmid = md5($uid.$resetpwd->randkey);
+        $url = "http://".$_SERVER['HTTP_HOST']."/main/user/resetpwd?confirmid={$confirmid}&u={$uid}";
+
+
+        $this->layout="application.modules.main.views.layouts.email";
+        $content = $this->render("email_reset_pwd",array('url'=>$url),true);
+        $this->layout="";
+        $mail = new Mail;
+        $mail->isHtml();
+        $ret = $mail->send($user->email,"美股时代-系统邮件",$content);
+        if($ret) {
+            $this->render("login_soft",array("infomsg"=>"发送成功")); exit;
+        } else {
+            $this->render("login_soft",array("infomsg"=>"发送失败")); exit;
+        }
+        //echo $content;
+        //var_dump($user->email,$ret);
+    }
+
+    // 重置密码页面以及修改码验证
+    public function actionResetpwd()
+    {
+        //echo "<pre>";var_dump($_REQUEST);exit;
+        $this->layout = '';
+        $confirmid = isset($_REQUEST['confirmid']) ? $_REQUEST['confirmid'] : '';
+        $uid = isset($_REQUEST['u']) ? $_REQUEST['u'] : '';
+        $isreset = isset($_REQUEST['resetsub']) ? $_REQUEST['resetsub'] : '';
+
+        if(empty($uid)||empty($confirmid)) {
+            $this->render("login_soft",array("infomsg"=>"信息有误")); exit;
+        }
+
+        $user = User::model()->findByPk($uid);
+        if(empty($user)) {
+            $this->render("login_soft",array("infomsg"=>"信息有误"));exit;
+        }
+        $resetpwd = Resetpwd::model()->findAll("uid=:uid",array(":uid"=>$uid));
+        if(empty($resetpwd)) {
+            $this->render("login_soft",array("infomsg"=>"信息有误")); exit;
+        }
+        $resetpwd = $resetpwd[0];
+
+        if($resetpwd->expired<time()) {
+            $this->render("login_soft",array("infomsg"=>"重置链接过期，请重新申请")); exit;
+        }
+        if(md5($uid.$resetpwd->randkey)!=$confirmid) {
+            $this->render("login_soft",array("infomsg"=>"信息有误")); exit;
+        }
+
+        if($isreset) {
+            // 重置提交
+            $repwd = isset($_REQUEST['repwd']) ? $_REQUEST['repwd'] : '';
+            $repwdconfirm = isset($_REQUEST['repwdconfirm']) ? $_REQUEST['repwdconfirm'] : '';
+            if($repwd!=$repwdconfirm) {
+                $this->render("login_soft",array("infomsg"=>"两次输入密码不同")); exit;
+            }
+            
+            $user->pwd = Login::pwdEncry($repwd);
+            $user->save();
+            $this->render("login_soft",array("infomsg"=>"密码修改成功")); exit;
+        }
+
+        $this->render("login_soft",array(
+            "isresetpwd"=>"1",
+            "confirmid"=>$confirmid,
+            "u"=>$uid,
+        )); exit;
+    }
+
+    public function actionResetpwdConfirm() 
+    {
+
     }
 
     // 锁屏
@@ -227,7 +344,7 @@ class UserController extends BackController
     public function actionLogout()
     {
         Login::logout();
-        $this->redirect('/main/user/login');
+        $this->redirect('/site/index');
     }
 
     // 删除用户
