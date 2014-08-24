@@ -10,7 +10,7 @@
 
 
 
-后台基于php框架yii，以及模板metronic
+后台基于php框架yii，以及模板metronic [下载链接](http://download.csdn.net/detail/loveyzy/6751593)
 
 后台示例：http://backadmin.hucong.net/site/index  用户名:admin 密码:admin
 
