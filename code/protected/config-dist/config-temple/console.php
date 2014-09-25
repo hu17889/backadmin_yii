@@ -85,32 +85,5 @@ return array(
     // application-level parameters that can be accessed
     // using Yii::app()->params['paramName']
     'params'=>array(
-        'zhushouredis'=>array(
-            'bjsc' => array(
-                'write' => '10.121.199.250',
-                'read'  => '10.121.199.254',
-                'port'  => '6236',
-                'pass'  => "71687afa4f4afa29",
-            ),
-            'shm' => array(
-                'write' => '10.130.113.253',
-                'read'  => '10.130.113.254',
-                'port'  => '6236',
-                'pass'  => "71687afa4f4afa29",
-            ),
-            'zwt' => array(
-                'write' => '10.131.199.249',
-                'read'  => '10.131.199.254',
-                'port'  => '6236',
-                'pass'  => "71687afa4f4afa29",
-            ),
-            'gzst' => array(
-                'write' => '10.168.232.245',
-                'read'  => '10.168.232.245',
-                'port'  => '6236',
-                'pass'  => "71687afa4f4afa29",
-            ),
-        ),
-        // this is used in contact page
     ),
 );
