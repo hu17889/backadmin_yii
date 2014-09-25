@@ -98,6 +98,7 @@ class RoleController extends BackController
         $retActions = array();
         foreach ($actionList as $v) {
             $parts = explode("/",$v['route']);
+            if(!isset($parts[1])) continue;
             $retActions[$parts[1]][] = $v->getAttributes();
         }
         //echo "<pre>";var_dump($retActions);exit;
