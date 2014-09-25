@@ -37,36 +37,23 @@ return array(
     // application components
     'components'=>array(
 
-        'cache' => array(
-            'class' => 'application.extensions.CRedisCache',
-            'servers'=>array(
-                array(
-                    'host'=>'10.121.199.250',
-                    //'host'=>'10.131.199.254',
-                    'port'=>'6195',
-                    'password'=>'74af911a593ea8d5',
-                ),
-            ),
-            'keyPrefix' => '',
-        ),
 
-        // sjbb
+        // 其他业务功能数据库配置，可与后台数据配置相同
         'db'=>array(
-            'connectionString' => 'mysql:host=123.125.83.240;dbname=sjbb',
-            //'connectionString' => 'mysql:host=10.16.15.101;dbname=sjbb', // 测试机118
-            //'connectionString' => 'mysql:host=111.13.49.21;dbname=sjbb',
+            'connectionString' => 'mysql:host=127.0.0.1;dbname=backadmin',
             'emulatePrepare' => true,
-            'username' => 'sjbb',
-            'password' => 'sjbb',
+            'username' => 'backadmin',
+            'password' => 'xxx',
             'charset' => 'utf8',
         ),
 
+        // *** 后台数据库配置
         'db_frame'=>array(
             'class'=>'CDbConnection',
-            'connectionString' => 'mysql:host=10.16.15.79:3306;dbname=backadmin',
+            'connectionString' => 'mysql:host=127.0.0.1;dbname=backadmin',
             'emulatePrepare' => true,
-            'username' => 'open',
-            'password' => '8J6cn4A7f4SC2a7W',
+            'username' => 'backadmin',
+            'password' => 'xxx',
             'charset' => 'utf8',
         ),
 
