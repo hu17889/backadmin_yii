@@ -8,7 +8,7 @@
 
 简化后台可取消权限限制，无需用户登录；
 
-
+* [![backadmin_yii讨论群](http://pub.idqqimg.com/wpa/images/group.png)](http://shang.qq.com/wpa/qunwpa?idkey=0c5778c267be31763a8c6c49b6d10bc871e06ec4ff85d99f12c6519d29c2b649) QQ群号：433931515
 
 后台基于php框架yii，以及模板metronic [下载链接](http://download.csdn.net/detail/loveyzy/6751593)
 
