@@ -2,7 +2,8 @@
 SQLyog Ultimate v9.20 
 MySQL - 5.5.34-0ubuntu0.12.04.1 : Database - backadmin
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -76,7 +77,7 @@ CREATE TABLE `m-user` (
   `uid` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
   `uname` varchar(20) NOT NULL DEFAULT '' COMMENT '用户名称',
   `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `pwd` varchar(20) NOT NULL DEFAULT '' COMMENT '密码',
+  `pwd` varchar(50) NOT NULL DEFAULT '' COMMENT '密码',
   `rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '角色id',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`),
@@ -85,7 +86,7 @@ CREATE TABLE `m-user` (
 
 /*Data for the table `m-user` */
 
-insert  into `m-user`(`uid`,`uname`,`email`,`pwd`,`rid`,`update_time`) values (1,'admin','admin@backadmin.com','21232f297a57a5a74389',1,'2013-08-01 21:51:28');
+insert  into `m-user`(`uid`,`uname`,`email`,`pwd`,`rid`,`update_time`) values (1,'admin','admin@backadmin.com','21232f297a57a5a743894a0e4a801fc3',1,'2013-08-01 21:51:28');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -148,6 +148,7 @@ class UserController extends BackController
         if(!empty($_POST['name'])&&!empty($_POST['pwd'])) 
         {
             $loginUserInfo = Login::logins($_REQUEST['name'],$_REQUEST['pwd'],'notmingwen');
+            //var_dump($_REQUEST,$loginUserInfo);exit;
             // 兼容老的情况
             if(empty($loginUserInfo))
                 $loginUserInfo = Login::logins($_REQUEST['name'],$_REQUEST['pwd'],'mingwen');
